@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Courtroom Simulator</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <span class="gavel" aria-hidden="true">⚖</span>
+      <div>
+        <h1>Strategic Agents in a Simulated Courtroom</h1>
+        <p class="sub">Team Saul Goodman · Agents &amp; Game Theory · deterministic rule-based judge</p>
+      </div>
+    </div>
+    <div class="status" id="mode" title="Data source">connecting…</div>
+  </header>
+
+  <nav class="tabs" role="tablist">
+    <button role="tab" class="tab active" data-tab="trial" aria-selected="true">Trial</button>
+    <button role="tab" class="tab" data-tab="game" aria-selected="false">Game theory</button>
+    <button role="tab" class="tab" data-tab="case" aria-selected="false">Case file</button>
+  </nav>
+
+  <section class="controls">
+    <label>Case <select id="case"></select></label>
+    <label>Prosecution <select id="pstrat"></select></label>
+    <label>Defense <select id="dstrat"></select></label>
+    <label>Seed <input id="seed" type="number" min="0" value="0"></label>
+    <button id="run" class="primary">Run trial</button>
+    <span class="spacer"></span>
+    <div class="playback" aria-label="Playback">
+      <button id="first" title="First event">⏮</button>
+      <button id="prev" title="Previous event">◀</button>
+      <button id="play" title="Play / pause">▶</button>
+      <button id="next" title="Next event">▶︎|</button>
+      <button id="last" title="Last event">⏭</button>
+      <input id="scrub" type="range" min="0" max="0" value="0" aria-label="Event scrubber">
+      <select id="speed" aria-label="Speed">
+        <option value="700">0.5×</option><option value="350" selected>1×</option><option value="120">3×</option>
+      </select>
+    </div>
+  </section>
+
+  <main id="tab-trial" class="tabpanel">
+    <div id="banner" class="banner hidden"></div>
+    <div class="grid">
+      <section class="card" id="gauges-card">
+        <h2>Burden of proof <span class="hint" id="threshold-label"></span></h2>
+        <div id="gauges"></div>
+      </section>
+      <section class="card wide" id="timeline-card">
+        <h2>Element probability over time</h2>
+        <svg id="timeline" viewBox="0 0 800 220" preserveAspectRatio="none" role="img" aria-label="Probability timeline"></svg>
+        <div id="timeline-legend" class="legend"></div>
+      </section>
+      <section class="card tall" id="stream-card">
+        <h2>Docket · action stream</h2>
+        <ol id="stream"></ol>
+      </section>
+      <section class="card" id="rules-card">
+        <h2>Rules fired</h2>
+        <div id="rules"></div>
+      </section>
+      <section class="card" id="ledger-card">
+        <h2>Ledgers</h2>
+        <table id="ledger"></table>
+      </section>
+      <section class="card wide" id="graph-card">
+        <h2>Evidence &amp; contradiction graph</h2>
+        <svg id="graph" viewBox="0 0 800 420" role="img" aria-label="Evidence graph"></svg>
+        <div class="legend">
+          <span><i class="dot admitted"></i>admitted</span><span><i class="dot excluded"></i>excluded</span>
+          <span><i class="dot offered"></i>pending</span><span><i class="dot unpresented"></i>not offered</span>
+          <span><i class="line contra"></i>contradicts</span><span><i class="line corr"></i>corroborates</span>
+        </div>
+      </section>
+      <section class="card wide" id="findings-card">
+        <h2>Element findings (exact arithmetic)</h2>
+        <table id="findings"></table>
+        <p class="digest">Audit digest <code id="digest">—</code></p>
+      </section>
+    </div>
+  </main>
+
+  <main id="tab-game" class="tabpanel hidden">
+    <section class="controls inner">
+      <label>Strategies
+        <select id="gstrats">
+          <option value="aggressive,conservative">Aggressive vs Conservative (2×2)</option>
+          <option value="aggressive,conservative,adaptive">+ Adaptive (3×3)</option>
+        </select>
+      </label>
+      <label>Seeds <input id="gseeds" type="number" min="1" max="100" value="20"></label>
+      <button id="grun" class="primary">Solve game</button>
+      <span class="hint" id="gstatus"></span>
+    </section>
+    <div class="grid">
+      <section class="card wide">
+        <h2>Payoff matrix <span class="hint">(U<sub>P</sub>, U<sub>D</sub>) · highlighted = pure Nash equilibrium</span></h2>
+        <div id="matrix"></div>
+      </section>
+      <section class="card">
+        <h2>Equilibria</h2>
+        <div id="equilibria"></div>
+      </section>
+      <section class="card wide">
+        <h2>Replicator dynamics <span class="hint">share playing Aggressive</span></h2>
+        <svg id="dynamics" viewBox="0 0 420 420" role="img" aria-label="Replicator dynamics phase plot"></svg>
+      </section>
+      <section class="card">
+        <h2>Diagnosis</h2>
+        <ul id="notes"></ul>
+      </section>
+    </div>
+  </main>
+
+  <main id="tab-case" class="tabpanel hidden">
+    <div class="grid"><section class="card full" id="casefile"></section></div>
+  </main>
+
+  <footer>All cases, people and organisations are synthetic. The model is stylised and is not legal advice.</footer>
+  <script src="data/bundle.js" onerror="void 0"></script>
+  <script src="app.js"></script>
+</body>
+</html>
