@@ -3,125 +3,260 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Courtroom Simulator</title>
+  <title>Saul Goodman Courtroom</title>
+  <meta name="description" content="Watch two AI lawyers argue a fictional case while a rule-based judge explains every ruling in plain English.">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <header class="topbar">
-    <div class="brand">
-      <span class="gavel" aria-hidden="true">⚖</span>
-      <div>
-        <h1>Strategic Agents in a Simulated Courtroom</h1>
-        <p class="sub">Team Saul Goodman · Agents &amp; Game Theory · deterministic rule-based judge</p>
-      </div>
+  <a class="skip-link" href="#trial">Skip to the trial</a>
+
+  <header class="site-header">
+    <div class="wrap header-inner">
+      <a class="wordmark" href="#top" aria-label="Saul Goodman Courtroom, back to top">
+        <span class="mark" aria-hidden="true"><i></i><i></i></span>
+        Saul Goodman Courtroom
+      </a>
+      <nav class="site-nav" aria-label="Sections">
+        <a href="#trial">Watch a trial</a>
+        <a href="#styles">Which style wins</a>
+        <a href="#judge">How the judge decides</a>
+      </nav>
+      <label class="switch">
+        <input type="checkbox" id="tech-toggle">
+        <span class="track" aria-hidden="true"></span>
+        <span class="switch-long">Technical details</span><span class="switch-short">Details</span>
+      </label>
     </div>
-    <div class="status" id="mode" title="Data source">connecting…</div>
   </header>
 
-  <nav class="tabs" role="tablist">
-    <button role="tab" class="tab active" data-tab="trial" aria-selected="true">Trial</button>
-    <button role="tab" class="tab" data-tab="game" aria-selected="false">Game theory</button>
-    <button role="tab" class="tab" data-tab="case" aria-selected="false">Case file</button>
-  </nav>
-
-  <section class="controls">
-    <label>Case <select id="case"></select></label>
-    <label>Prosecution <select id="pstrat"></select></label>
-    <label>Defense <select id="dstrat"></select></label>
-    <label>Seed <input id="seed" type="number" min="0" value="0"></label>
-    <button id="run" class="primary">Run trial</button>
-    <span class="spacer"></span>
-    <div class="playback" aria-label="Playback">
-      <button id="first" title="First event">⏮</button>
-      <button id="prev" title="Previous event">◀</button>
-      <button id="play" title="Play / pause">▶</button>
-      <button id="next" title="Next event">▶︎|</button>
-      <button id="last" title="Last event">⏭</button>
-      <input id="scrub" type="range" min="0" max="0" value="0" aria-label="Event scrubber">
-      <select id="speed" aria-label="Speed">
-        <option value="700">0.5×</option><option value="350" selected>1×</option><option value="120">3×</option>
-      </select>
-    </div>
-  </section>
-
-  <main id="tab-trial" class="tabpanel">
-    <div id="banner" class="banner hidden"></div>
-    <div class="grid">
-      <section class="card" id="gauges-card">
-        <h2>Burden of proof <span class="hint" id="threshold-label"></span></h2>
-        <div id="gauges"></div>
-      </section>
-      <section class="card wide" id="timeline-card">
-        <h2>Element probability over time</h2>
-        <svg id="timeline" viewBox="0 0 800 220" preserveAspectRatio="none" role="img" aria-label="Probability timeline"></svg>
-        <div id="timeline-legend" class="legend"></div>
-      </section>
-      <section class="card tall" id="stream-card">
-        <h2>Docket · action stream</h2>
-        <ol id="stream"></ol>
-      </section>
-      <section class="card" id="rules-card">
-        <h2>Rules fired</h2>
-        <div id="rules"></div>
-      </section>
-      <section class="card" id="ledger-card">
-        <h2>Ledgers</h2>
-        <table id="ledger"></table>
-      </section>
-      <section class="card wide" id="graph-card">
-        <h2>Evidence &amp; contradiction graph</h2>
-        <svg id="graph" viewBox="0 0 800 420" role="img" aria-label="Evidence graph"></svg>
-        <div class="legend">
-          <span><i class="dot admitted"></i>admitted</span><span><i class="dot excluded"></i>excluded</span>
-          <span><i class="dot offered"></i>pending</span><span><i class="dot unpresented"></i>not offered</span>
-          <span><i class="line contra"></i>contradicts</span><span><i class="line corr"></i>corroborates</span>
-        </div>
-      </section>
-      <section class="card wide" id="findings-card">
-        <h2>Element findings (exact arithmetic)</h2>
-        <table id="findings"></table>
-        <p class="digest">Audit digest <code id="digest">—</code></p>
-      </section>
-    </div>
-  </main>
-
-  <main id="tab-game" class="tabpanel hidden">
-    <section class="controls inner">
-      <label>Strategies
-        <select id="gstrats">
-          <option value="aggressive,conservative">Aggressive vs Conservative (2×2)</option>
-          <option value="aggressive,conservative,adaptive">+ Adaptive (3×3)</option>
-        </select>
-      </label>
-      <label>Seeds <input id="gseeds" type="number" min="1" max="100" value="20"></label>
-      <button id="grun" class="primary">Solve game</button>
-      <span class="hint" id="gstatus"></span>
+  <main id="top">
+    <section class="hero wrap">
+      <h1><span>Two AI lawyers.</span> <span>One rulebook judge.</span></h1>
+      <p class="lede">
+        Pick a fictional case and choose how each lawyer plays. Then watch the trial step by step: every piece of
+        evidence, every objection and every ruling, explained in plain English. The judge isn't an AI. It follows fixed
+        rules, so the same trial always ends the same way.
+      </p>
+      <div class="hero-actions">
+        <button class="btn primary" type="button" id="hero-start">Watch a trial</button>
+        <a class="btn quiet" href="#judge">How the judge decides</a>
+      </div>
+      <ol class="steps">
+        <li><strong>Pick a case</strong><span>A stolen chip design, a crypto heist, a robotaxi crash and more.</span></li>
+        <li><strong>Choose each side's style</strong><span>Aggressive lawyers take risks. Careful ones play it safe.</span></li>
+        <li><strong>Watch the verdict take shape</strong><span>See how sure the judge is after every move.</span></li>
+      </ol>
     </section>
-    <div class="grid">
-      <section class="card wide">
-        <h2>Payoff matrix <span class="hint">(U<sub>P</sub>, U<sub>D</sub>) · highlighted = pure Nash equilibrium</span></h2>
-        <div id="matrix"></div>
-      </section>
-      <section class="card">
-        <h2>Equilibria</h2>
-        <div id="equilibria"></div>
-      </section>
-      <section class="card wide">
-        <h2>Replicator dynamics <span class="hint">share playing Aggressive</span></h2>
-        <svg id="dynamics" viewBox="0 0 420 420" role="img" aria-label="Replicator dynamics phase plot"></svg>
-      </section>
-      <section class="card">
-        <h2>Diagnosis</h2>
-        <ul id="notes"></ul>
-      </section>
+
+    <section class="section washed" id="trial" aria-labelledby="trial-title">
+      <div class="wrap">
+        <header class="section-head">
+          <h2 id="trial-title">Watch a trial</h2>
+          <p>Choose a case and a style for each side, then press Start trial.</p>
+        </header>
+
+        <form class="setup" id="setup">
+          <div class="field case-field">
+            <label for="case">Case</label>
+            <select id="case"></select>
+          </div>
+          <fieldset class="field">
+            <legend><span class="tag p" data-side-label="prosecution">Prosecution</span> plays</legend>
+            <div class="seg p" id="prosecution-style" role="radiogroup"></div>
+            <p class="field-help" id="prosecution-style-help"></p>
+          </fieldset>
+          <fieldset class="field">
+            <legend><span class="tag d">Defense</span> plays</legend>
+            <div class="seg d" id="defense-style" role="radiogroup"></div>
+            <p class="field-help" id="defense-style-help"></p>
+          </fieldset>
+          <div class="field seed-field live-only">
+            <label for="seed">Trial number</label>
+            <input id="seed" type="number" min="0" value="0" inputmode="numeric">
+            <p class="field-help">Same number, same trial.</p>
+          </div>
+          <div class="field submit-field">
+            <button class="btn primary" type="submit" id="run">Start trial</button>
+          </div>
+          <p class="setup-note offline-only" id="setup-note">
+            The online demo includes six saved matchups per case, so some combinations are greyed out. Run the
+            simulator on your computer to try any combination.
+          </p>
+        </form>
+
+        <div class="brief" id="brief"></div>
+
+        <div class="courtroom">
+          <section class="stage" aria-label="Trial in progress">
+            <ol class="phases" id="phases" aria-label="Stages of the trial"></ol>
+            <div class="now" id="now" aria-live="polite">
+              <p class="line">Loading the trial…</p>
+            </div>
+            <div class="meters">
+              <div class="meters-head">
+                <h3>How sure is the judge?</h3>
+                <p id="bar-note"></p>
+              </div>
+              <div id="meters"></div>
+              <p class="meters-note" id="meters-note"></p>
+            </div>
+            <div class="player" aria-label="Playback controls">
+              <div class="transport">
+                <button class="icon-btn" type="button" id="first" aria-label="Back to the start">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 5v14M18 6l-9 6 9 6V6z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/></svg>
+                </button>
+                <button class="icon-btn" type="button" id="prev" aria-label="Previous step">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 6l-6 6 6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/></svg>
+                </button>
+                <button class="icon-btn play-btn" type="button" id="play" aria-label="Play">
+                  <svg class="i-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13l10.5-6.5L8 5.5z" fill="currentColor"/></svg>
+                  <svg class="i-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5h3v14H8zM13 5h3v14h-3z" fill="currentColor"/></svg>
+                </button>
+                <button class="icon-btn" type="button" id="next" aria-label="Next step">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/></svg>
+                </button>
+                <button class="icon-btn" type="button" id="last" aria-label="Skip to the verdict">
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 5v14M6 6l9 6-9 6V6z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/></svg>
+                </button>
+              </div>
+              <div class="progress">
+                <input id="scrub" type="range" min="0" max="0" value="0" aria-label="Trial progress">
+                <span class="progress-label" id="step-label"></span>
+              </div>
+              <label class="speed">
+                <span>Speed</span>
+                <select id="speed">
+                  <option value="2000">Slow</option>
+                  <option value="1200" selected>Normal</option>
+                  <option value="500">Fast</option>
+                </select>
+              </label>
+            </div>
+          </section>
+
+          <aside class="transcript" aria-labelledby="transcript-title">
+            <h3 id="transcript-title">What's happened so far</h3>
+            <ol id="transcript"></ol>
+          </aside>
+        </div>
+
+        <div class="evidence">
+          <section class="ev-col p" aria-labelledby="prosecution-ev-title">
+            <header class="ev-head">
+              <h3 id="prosecution-ev-title">Prosecution's evidence</h3>
+              <dl class="score" id="prosecution-score"></dl>
+            </header>
+            <ul class="ev-list" id="prosecution-evidence"></ul>
+          </section>
+          <section class="ev-col d" aria-labelledby="defense-ev-title">
+            <header class="ev-head">
+              <h3 id="defense-ev-title">Defense's evidence</h3>
+              <dl class="score" id="defense-score"></dl>
+            </header>
+            <ul class="ev-list" id="defense-evidence"></ul>
+          </section>
+        </div>
+        <p class="ev-footnote">Hidden flaws are visible to you but not to the other side. A lawyer has to spot them and object.</p>
+
+        <section class="working tech" aria-labelledby="working-title">
+          <h3 id="working-title">The judge's full working</h3>
+          <p class="working-note">Final numbers for the verdict. Certainty is computed with exact fractions, so rounding can never change a result.</p>
+          <div class="table-scroll"><table class="data" id="findings"></table></div>
+          <h4>Each side's record</h4>
+          <div class="table-scroll"><table class="data" id="ledger"></table></div>
+          <p class="digest">Record fingerprint (SHA-256 of the whole event chain): <code id="digest"></code></p>
+        </section>
+      </div>
+    </section>
+
+    <section class="section" id="styles" aria-labelledby="styles-title">
+      <div class="wrap">
+        <header class="section-head">
+          <h2 id="styles-title">Which style wins?</h2>
+          <p id="styles-intro">Should a lawyer go on the attack or play it safe? We replayed the case for every combination of styles to find out.</p>
+          <p class="styles-case" id="styles-case"></p>
+        </header>
+
+        <div class="game-controls live-only">
+          <label>Styles to compare
+            <select id="gstrats">
+              <option value="aggressive,conservative">Aggressive and careful</option>
+              <option value="aggressive,conservative,adaptive">Aggressive, careful and adaptive</option>
+            </select>
+          </label>
+          <label>Trials per matchup <input id="gseeds" type="number" min="1" max="100" value="20" inputmode="numeric"></label>
+          <button class="btn primary" type="button" id="grun">Run the numbers</button>
+          <p class="field-help" id="gstatus" role="status"></p>
+        </div>
+
+        <div class="styles-layout" id="styles-body">
+          <div>
+            <div class="table-scroll"><table class="matrix" id="matrix"></table></div>
+            <p class="matrix-note" id="matrix-note"></p>
+          </div>
+          <div class="insight" id="insight"></div>
+        </div>
+
+        <div class="tech game-tech" id="game-tech">
+          <div class="game-tech-grid">
+            <div>
+              <h3>Analysis notes</h3>
+              <ul id="game-notes"></ul>
+            </div>
+            <figure>
+              <svg id="dynamics" viewBox="0 0 420 420" role="img" aria-label="Replicator dynamics: how the share of aggressive play evolves"></svg>
+              <figcaption>Replicator dynamics: how the share of aggressive play would drift if both sides kept learning from results.</figcaption>
+            </figure>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section washed" id="judge" aria-labelledby="judge-title">
+      <div class="wrap">
+        <header class="section-head">
+          <h2 id="judge-title">How the judge decides</h2>
+          <p>There's no AI in the judge's chair. It's a fixed set of rules written down in advance, so anyone can check why a trial ended the way it did.</p>
+        </header>
+        <ol class="flow">
+          <li>
+            <h3>Evidence is offered</h3>
+            <p>One side presents a document, record or witness. The other side can object if it's second-hand, obtained illegally, unverified, shared too late or off-topic.</p>
+          </li>
+          <li>
+            <h3>The judge rules</h3>
+            <p>Each objection is accepted or rejected by a written rule. Evidence that's thrown out doesn't count. A failed objection costs a penalty, so objecting isn't free.</p>
+          </li>
+          <li>
+            <h3>The evidence is weighed</h3>
+            <p>Reliable sources count for more. When two pieces of evidence contradict each other, both count for less. A discredited witness counts for half.</p>
+          </li>
+          <li>
+            <h3>Every point must clear the bar</h3>
+            <p>Criminal cases need about 90% certainty on each point. Civil cases need more than 50%. If even one point falls short, the accused wins.</p>
+          </li>
+        </ol>
+        <p class="promise">Same case, same choices, same verdict, every time. Each step of the trial record is fingerprinted, so any change to it would show.</p>
+        <div class="tech formula">
+          <h3>The exact rule, per point <i>e</i>, over accepted evidence only</h3>
+<pre>S_i    = reliability × witness credibility (halved per successful challenge)
+disc_i = min(9/10, Σ_{j contradicts i} (4/5)·S_j/(S_i+S_j))
+corr   = 1 + ½(1 − 2^-k),  k = other facts supporting the same way
+L_e    = prior + 3 · Σ support·S·(1−disc)·corr      (exact fractions)
+verdict: guilty / liable only if every L_e clears the standard</pre>
+          <p>Bars: beyond reasonable doubt 11/5 log-odds (about 90%), clear and convincing 11/10 (about 75%), balance of probabilities &gt; 0 (more than 50%).</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap footer-inner">
+      <p>All cases, people and companies are fictional. This is a simulation, not legal advice.</p>
+      <p><span id="source">Connecting…</span> Built by Team Saul Goodman.</p>
     </div>
-  </main>
+  </footer>
 
-  <main id="tab-case" class="tabpanel hidden">
-    <div class="grid"><section class="card full" id="casefile"></section></div>
-  </main>
-
-  <footer>All cases, people and organisations are synthetic. The model is stylised and is not legal advice.</footer>
   <script src="data/bundle.js" onerror="void 0"></script>
   <script src="app.js"></script>
 </body>
